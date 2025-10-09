@@ -9,7 +9,7 @@
     Сохраните его где-нибудь, потому что показывается 1 раз.
     'Generate token'
 
-**2. В терминале:** 
+**2. В терминале:**
 
     mkdir Sales-Aggregator
     cd Sales-Aggregator
@@ -29,4 +29,5 @@
 
     uv sync
     source .venv/bin/activate
+<<<<<<< HEAD
     pre-commit install (проверка: pre-commit run --all-files)
