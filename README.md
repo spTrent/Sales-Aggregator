@@ -7,6 +7,7 @@
     https://github.com/settings/tokens
     'Generate new token' -> 'Generate new token Fine-grained, repo-scoped'
     Называйте нормальным именем, ставьте длительность 3 месяца и 'Only select repositories' выбирайте Sales Aggregator
+    Сохраните его где-нибудь, потому что показывается 1 раз.
     'Generate token'
 
 **2. В терминале:** 
