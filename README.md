@@ -30,3 +30,4 @@
 
     uv sync
     source .venv/bin/activate
+    pre-commit install (проверка: pre-commit run --all-files)
