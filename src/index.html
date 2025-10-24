@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СтудCheck - агрегатор студенческих скидок</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+          --primary: #d4afff;
+          --primary-dark: #b800ff;
+          --primary-light: #f4e4ff;
+          --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5ffff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: black;
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: black;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: black;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: black;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: black;
+            border: 2px solid black;
+        }
+
+        .btn-outline:hover {
+            background: black;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-text">
+                        <h1>СтудCheck</h1>
+                        <p>Агрегатор студенческих скидок</p>
+                    </div>
+                </div>
+
+                <nav class="nav-links">
+                    <a href="#"><i class="fas fa-home"></i> Главная</a>
+                    <a href="#"><i class="fas fa-percentage"></i> Все скидки</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                </nav>
+                <div class="user-actions">
+                    <button class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Войти</button>
+                    <button class="btn btn-primary"><i class="fas fa-user-plus"></i> Регистрация</button>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+</html>
