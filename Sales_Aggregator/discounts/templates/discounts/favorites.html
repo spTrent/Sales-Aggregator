@@ -1,0 +1,52 @@
+{% extends 'discounts/base.html' %}
+
+{% block title %}Избранное - StudCheck{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Избранные скидки</h2>
+
+{% if posts %}
+    {% for post in posts %}
+    <div class="card post-card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <span class="badge bg-secondary category-badge">{{ post.category.name }}</span>
+            </div>
+            
+            <p class="card-text">{{ post.description }}</p>
+            
+            <div class="mb-2">
+                <strong>Место:</strong> {{ post.place }}
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <span class="text-success">👍 {{ post.upvotes_count|default:0 }}</span>
+                    <span class="text-danger ms-2">👎 {{ post.downvotes_count|default:0 }}</span>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    <form method="post" action="{% url 'toggle_favorite' post.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-warning me-2" title="Удалить из избранного">
+                            Удалить
+                        </button>
+                    </form>
+                    <small class="text-muted">
+                        Автор: {{ post.author.username }}<br>
+                        {{ post.created_at|date:"d.m.Y H:i" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="text-center py-5">
+        <h4>В избранном пока пусто</h4>
+        <p class="text-muted">Добавляйте скидки в избранное, чтобы не потерять!</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Найти скидки</a>
+    </div>
+{% endif %}
+{% endblock %}
