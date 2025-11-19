@@ -1,52 +1,55 @@
 {% extends 'discounts/base.html' %}
 
-{% block title %}Мои посты - StudCheck{% endblock %}
+{% block title %}Мои посты - СтудCheck{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Мои посты о скидках</h2>
-    <a href="{% url 'create_post' %}" class="btn btn-primary">+ Добавить скидку</a>
-</div>
+<h2 class="section-title">Мои посты о скидках</h2>
 
 {% if posts %}
     {% for post in posts %}
-    <div class="card post-card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <div>
-                    <span class="badge bg-secondary">{{ post.category.name }}</span>
-                    <span class="badge {% if post.rating > 0 %}bg-success{% elif post.rating < 0 %}bg-danger{% else %}bg-secondary{% endif %}">
-                        Рейтинг: {{ post.rating }}
-                    </span>
+    <div class="discount-card">
+        <div class="discount-title">{{ post.title }}</div>
+        <div class="discount-description">{{ post.description }}</div>
+        <div class="discount-info">
+            <div>
+                <strong>Место:</strong> {{ post.place }}<br>
+                <strong>Категория:</strong> {{ post.category.name }}
+            </div>
+            <div class="discount-date">
+                Создан: {{ post.created_at|date:"d.m.Y H:i" }}<br>
+                Обновлен: {{ post.updated_at|date:"d.m.Y H:i" }}
+            </div>
+        </div>
+        <div class="rating-section">
+            <div class="rating-count">
+                <div class="rating-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>{{ post.upvotes_count|default:0 }}</span>
+                </div>
+                <div class="rating-item">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span>{{ post.downvotes_count|default:0 }}</span>
+                </div>
+                <div class="rating-item">
+                    <i class="fas fa-heart"></i>
+                    <span>{{ post.favorited_by.count }}</span>
                 </div>
             </div>
-            
-            <p class="card-text">{{ post.description }}</p>
-            
-            <div class="mb-2">
-                <strong>Место:</strong> {{ post.place }}
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                    Создан: {{ post.created_at|date:"d.m.Y H:i" }}<br>
-                    Обновлен: {{ post.updated_at|date:"d.m.Y H:i" }}
-                </small>
-                <div>
-                    <span class="text-success">👍 {{ post.upvotes_count|default:0 }}</span>
-                    <span class="text-danger ms-2">👎 {{ post.downvotes_count|default:0 }}</span>
-                    <span class="text-warning ms-2">⭐ {{ post.favorited_by.count }}</span>
-                </div>
+            <div>
+                <span style="font-weight: bold; color: {% if post.rating > 0 %}#4CAF50{% elif post.rating < 0 %}#f44336{% else %}#666{% endif %};">
+                    Рейтинг: {{ post.rating }}
+                </span>
             </div>
         </div>
     </div>
     {% endfor %}
 {% else %}
-    <div class="text-center py-5">
-        <h4>У вас пока нет постов</h4>
-        <p class="text-muted">Поделитесь первой скидкой с другими студентами!</p>
-        <a href="{% url 'create_post' %}" class="btn btn-primary">Добавить первую скидку</a>
+    <div class="discount-card">
+        <div style="text-align: center; padding: 40px;">
+            <h3>У вас пока нет постов</h3>
+            <p style="color: #666; margin: 20px 0;">Поделитесь первой скидкой с другими студентами!</p>
+            <a href="{% url 'create_post' %}" class="btn btn-primary">Добавить первую скидку</a>
+        </div>
     </div>
 {% endif %}
 {% endblock %}

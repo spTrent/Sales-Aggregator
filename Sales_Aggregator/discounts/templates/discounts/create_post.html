@@ -1,42 +1,66 @@
 {% extends 'discounts/base.html' %}
 
-{% block title %}Добавить скидку - StudCheck{% endblock %}
+{% block title %}Создать скидку - СтудCheck{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0">Добавить новую скидку</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    {% for field in form %}
-                    <div class="mb-3">
-                        <label for="{{ field.id_for_label }}" class="form-label">
-                            <strong>{{ field.label }}</strong>
-                        </label>
-                        {{ field }}
-                        {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
-                        {% endif %}
-                        {% if field.errors %}
-                        <div class="text-danger">
-                            {{ field.errors }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success btn-lg">Опубликовать скидку</button>
-                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Отмена</a>
-                    </div>
-                </form>
-            </div>
+<div class="post-form-container">
+    <div class="post-form-card">
+        <h2 class="post-form-title">Создать новую скидку</h2>
+
+        {% if form.errors %}
+        <div class="error-message">
+            Пожалуйста, исправьте ошибки в форме.
         </div>
+        {% endif %}
+
+        <form method="post" id="newPostForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label" for="id_title">Заголовок скидки *</label>
+                <input type="text" id="id_title" name="title" class="form-input" placeholder="Например: Скидка 20% на учебники" required value="{{ form.title.value|default:'' }}">
+                {% if form.title.errors %}
+                <div class="error-message">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_description">Описание условий *</label>
+                <textarea id="id_description" name="description" class="form-textarea" placeholder="Опишите условия получения скидки, необходимые документы, период действия и т.д." required>{{ form.description.value|default:'' }}</textarea>
+                {% if form.description.errors %}
+                <div class="error-message">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_place">Место *</label>
+                <input type="text" id="id_place" name="place" class="form-input" placeholder="Например: Книжный магазин 'Знание', ул. Студенческая, 15" required value="{{ form.place.value|default:'' }}">
+                {% if form.place.errors %}
+                <div class="error-message">{{ form.place.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_category">Категория *</label>
+                <select id="id_category" name="category" class="form-select" required>
+                    <option value="">Выберите категорию</option>
+                    {% for category in form.category.field.queryset %}
+                    <option value="{{ category.id }}" {% if form.category.value == category.id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.category.errors %}
+                <div class="error-message">{{ form.category.errors }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" id="postSubmitBtn">
+                <i class="fas fa-share"></i> Опубликовать скидку
+            </button>
+
+            <a href="{% url 'home' %}" class="btn btn-outline btn-full" style="margin-top: 10px; text-align: center; text-decoration: none;">
+                <i class="fas fa-times"></i> Отмена
+            </a>
+        </form>
     </div>
 </div>
 {% endblock %}
