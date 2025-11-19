@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СтудCheck - агрегатор студенческих скидок</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+          --primary: #d4afff;
+          --primary-dark: #b800ff;
+          --primary-light: #f4e4ff;
+          --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5ffff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: black;
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: black;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: black;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: black;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: black;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: black;
+            border: 2px solid black;
+        }
+
+        .btn-outline:hover {
+            background: black;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #337;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .discount-card {
+        width: 95%;
+        margin: 20px auto;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .discount-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .discount-description {
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .discount-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .discount-date {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .discount-actions {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .icon-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #666;
+        transition: var(--transition);
+        padding: 5px;
+        border-radius: 50%;
+    }
+
+    .icon-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+    }
+
+    .favorite.active {
+        color: #ff4757;
+    }
+
+    .like-btn.active {
+        color: #4CAF50;
+    }
+
+    .dislike-btn.active {
+        color: #f44336;
+    }
+
+    .rating-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .rating-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .rating-count {
+        font-size: 0.9rem;
+        color: #666;
+        display: flex;
+        gap: 15px;
+    }
+
+    .rating-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .new-post-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-dark);
+        color: white;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        z-index: 100;
+    }
+
+    .new-post-btn:hover {
+        transform: scale(1.1);
+        background: var(--primary);
+    }
+
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 40px 0;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #337;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        color: #666;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(180, 0, 255, 0.1);
+    }
+
+    .form-textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        resize: vertical;
+        min-height: 100px;
+        font-family: inherit;
+    }
+
+    .form-textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(180, 0, 255, 0.1);
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background: white;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(180, 0, 255, 0.1);
+    }
+
+    .btn-full {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #666;
+    }
+
+    .auth-footer a {
+        color: var(--primary-dark);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .tabs {
+        display: flex;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        border-bottom: 3px solid transparent;
+    }
+
+    .tab.active {
+        color: var(--primary-dark);
+        border-bottom: 3px solid var(--primary-dark);
+    }
+
+    .tab:hover:not(.active) {
+        background: #f9f9f9;
+    }
+
+    .post-form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 40px 0;
+    }
+
+    .post-form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .post-form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #337;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+
+    .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #c62828;
+    }
+
+    .success-message {
+        background: #e8f5e8;
+        color: #2e7d32;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #2e7d32;
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-links {
+            gap: 15px;
+        }
+
+        .auth-card {
+            padding: 25px;
+            margin: 0 15px;
+        }
+
+        .post-form-card {
+            padding: 25px;
+            margin: 0 15px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-text">
+                        <h1>СтудCheck</h1>
+                        <p>Агрегатор студенческих скидок</p>
+                    </div>
+                </div>
+
+                <nav class="nav-links">
+                    <a href="#" id="homeLink"><i class="fas fa-home"></i> Главная</a>
+                    <a href="#" id="myPostsLink"><i class="fas fa-newspaper"></i> Мои посты</a>
+                    <a href="#" id="favoritesLink"><i class="fas fa-heart"></i> Избранное</a>
+                    <a href="#" id="createPostLink"><i class="fas fa-plus-circle"></i> Создание поста</a>
+                </nav>
+
+                <div class="user-actions">
+                    <div id="userInfo" class="user-info hidden">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <span id="userName">Пользователь</span>
+                        <button class="btn btn-outline" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                    </div>
+
+                    <div id="guestActions">
+                        <button class="btn btn-outline" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
+                        <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Регистрация</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="mainPage">
+        <h2 class="section-title">Актуальные скидки</h2>
+
+        <div class="discount-card">
+            <div class="discount-actions">
+                <button class="icon-btn favorite"><i class="far fa-heart"></i></button>
+            </div>
+            <div class="discount-title">Скидка</div>
+            <div class="discount-description">На что скидка</div>
+            <div class="discount-info">
+                <div class="discount-date">до какого числа</div>
+            </div>
+            <div class="rating-section">
+                <div class="rating-buttons">
+                    <button class="icon-btn like-btn"><i class="far fa-thumbs-up"></i></button>
+                    <button class="icon-btn dislike-btn"><i class="far fa-thumbs-down"></i></button>
+                </div>
+                <div class="rating-count">
+                    <div class="rating-item">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span class="like-count">0</span>
+                    </div>
+                    <div class="rating-item">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span class="dislike-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="discount-card">
+            <div class="discount-actions">
+                <button class="icon-btn favorite"><i class="far fa-heart"></i></button>
+            </div>
+            <div class="discount-title">Скидка</div>
+            <div class="discount-description">На что скидка</div>
+            <div class="discount-info">
+                <div class="discount-date">до какого числа</div>
+            </div>
+            <div class="rating-section">
+                <div class="rating-buttons">
+                    <button class="icon-btn like-btn"><i class="far fa-thumbs-up"></i></button>
+                    <button class="icon-btn dislike-btn"><i class="far fa-thumbs-down"></i></button>
+                </div>
+                <div class="rating-count">
+                    <div class="rating-item">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span class="like-count">0</span>
+                    </div>
+                    <div class="rating-item">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span class="dislike-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="discount-card">
+            <div class="discount-actions">
+                <button class="icon-btn favorite"><i class="far fa-heart"></i></button>
+            </div>
+            <div class="discount-title">Скидка</div>
+            <div class="discount-description">На что скидка</div>
+            <div class="discount-info">
+                <div class="discount-date">до какого числа</div>
+            </div>
+            <div class="rating-section">
+                <div class="rating-buttons">
+                    <button class="icon-btn like-btn"><i class="far fa-thumbs-up"></i></button>
+                    <button class="icon-btn dislike-btn"><i class="far fa-thumbs-down"></i></button>
+                </div>
+                <div class="rating-count">
+                    <div class="rating-item">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span class="like-count">0</span>
+                    </div>
+                    <div class="rating-item">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span class="dislike-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="new-post-btn" id="newPostBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <div id="authPage" class="hidden">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="tabs">
+                    <div class="tab active" id="loginTab">Вход</div>
+                    <div class="tab" id="registerTab">Регистрация</div>
+                </div>
+
+                <div id="loginForm">
+                    <h2 class="auth-title">Вход в аккаунт</h2>
+                    <p class="auth-subtitle">Войдите, чтобы получить доступ ко всем скидкам</p>
+
+                    <div id="loginMessage"></div>
+
+                    <form id="loginFormFields">
+                        <div class="form-group">
+                            <label class="form-label" for="loginUsername">Имя пользователя</label>
+                            <input type="text" id="loginUsername" class="form-input" placeholder="Ваш никнейм" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="loginPassword">Пароль</label>
+                            <input type="password" id="loginPassword" class="form-input" placeholder="Введите пароль" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full" id="loginSubmitBtn">
+                            <i class="fas fa-sign-in-alt"></i> Войти
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        Нет аккаунта? <a href="#" id="switchToRegister">Зарегистрироваться</a>
+                    </div>
+                </div>
+
+                <div id="registerForm" class="hidden">
+                    <h2 class="auth-title">Регистрация</h2>
+                    <p class="auth-subtitle">Создайте аккаунт для доступа ко всем скидкам</p>
+
+                    <div id="registerMessage"></div>
+
+                    <form id="registerFormFields">
+                        <div class="form-group">
+                            <label class="form-label" for="registerUsername">Имя пользователя</label>
+                            <input type="text" id="registerUsername" class="form-input" placeholder="Придумайте никнейм" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="registerPassword">Пароль</label>
+                            <input type="password" id="registerPassword" class="form-input" placeholder="Создайте надежный пароль" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full" id="registerSubmitBtn">
+                            <i class="fas fa-user-plus"></i> Зарегистрироваться
+                        </button>
+                    </form>
+
+                    <div class="auth-footer">
+                        Уже есть аккаунт? <a href="#" id="switchToLogin">Войти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="newPostPage" class="hidden">
+        <div class="post-form-container">
+            <div class="post-form-card">
+                <h2 class="post-form-title">Создать новую скидку</h2>
+
+                <div id="postMessage"></div>
+
+                <form id="newPostForm">
+                    <div class="form-group">
+                        <label class="form-label" for="postTitle">Заголовок скидки *</label>
+                        <input type="text" id="postTitle" class="form-input" placeholder="Например: Скидка 20% на учебники" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="postDescription">Описание условий *</label>
+                        <textarea id="postDescription" class="form-textarea" placeholder="Опишите условия получения скидки, необходимые документы, период действия и т.д." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="postLocation">Место *</label>
+                        <input type="text" id="postLocation" class="form-input" placeholder="Например: Книжный магазин 'Знание', ул. Студенческая, 15" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="postCategory">Категория *</label>
+                        <select id="postCategory" class="form-select" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="education">Образование</option>
+                            <option value="food">Еда и напитки</option>
+                            <option value="entertainment">Развлечения</option>
+                            <option value="sports">Спорт</option>
+                            <option value="shopping">Шоппинг</option>
+                            <option value="transport">Транспорт</option>
+                            <option value="services">Услуги</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full" id="postSubmitBtn">
+                        <i class="fas fa-share"></i> Опубликовать скидку
+                    </button>
+
+                    <button type="button" class="btn btn-outline btn-full" id="cancelPostBtn" style="margin-top: 10px;">
+                        <i class="fas fa-times"></i> Отмена
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000/api';
+
+        let currentUser = null;
+        let authToken = localStorage.getItem('authToken');
+        let isLoggedIn = false;
+
+        const elements = {
+            mainPage: document.getElementById('mainPage'),
+            authPage: document.getElementById('authPage'),
+            newPostPage: document.getElementById('newPostPage'),
+            userInfo: document.getElementById('userInfo'),
+            guestActions: document.getElementById('guestActions'),
+            userName: document.getElementById('userName'),
+            userAvatar: document.getElementById('userAvatar'),
+            newPostBtn: document.getElementById('newPostBtn')
+        };
+
+        const api = {
+            async login(username, password) {
+                const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Ошибка входа');
+                }
+
+                return await response.json();
+            },
+
+            async register(username, password) {
+                const response = await fetch(`${API_BASE_URL}/auth/register/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Ошибка регистрации');
+                }
+
+                return await response.json();
+            },
+
+            async getDiscounts() {
+                const response = await fetch(`${API_BASE_URL}/discounts/`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                return await response.json();
+            },
+
+            async createDiscount(discountData) {
+                const response = await fetch(`${API_BASE_URL}/discounts/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(discountData)
+                });
+                return await response.json();
+            },
+
+            async getCategories() {
+                const response = await fetch(`${API_BASE_URL}/categories/`);
+                return await response.json();
+            },
+
+            async addToFavorites(discountId) {
+                const response = await fetch(`${API_BASE_URL}/favorites/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ discount: discountId })
+                });
+                return await response.json();
+            },
+
+            async removeFromFavorites(discountId) {
+                const response = await fetch(`${API_BASE_URL}/favorites/${discountId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                return response.status === 204;
+            }
+        };
+
+        const ui = {
+            showMessage(elementId, message, type = 'error') {
+                const element = document.getElementById(elementId);
+                element.innerHTML = `<div class="${type}-message">${message}</div>`;
+                setTimeout(() => element.innerHTML = '', 5000);
+            },
+
+            updateAuthUI() {
+                if (isLoggedIn && currentUser) {
+                    elements.userInfo.classList.remove('hidden');
+                    elements.guestActions.classList.add('hidden');
+                    elements.userName.textContent = currentUser.username;
+                    elements.userAvatar.textContent = currentUser.username.charAt(0).toUpperCase();
+                    elements.newPostBtn.style.display = 'block';
+                } else {
+                    elements.userInfo.classList.add('hidden');
+                    elements.guestActions.classList.remove('hidden');
+                    elements.newPostBtn.style.display = 'none';
+                }
+            }
+        };
+
+        document.getElementById('loginTab').addEventListener('click', function() {
+            showLoginForm();
+        });
+
+        document.getElementById('registerTab').addEventListener('click', function() {
+            showRegisterForm();
+        });
+
+        document.getElementById('switchToLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoginForm();
+        });
+
+        document.getElementById('switchToRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            showRegisterForm();
+        });
+
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginTab').classList.add('active');
+            document.getElementById('registerTab').classList.remove('active');
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.add('active');
+        }
+
+        document.getElementById('loginFormFields').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Вход...';
+
+            try {
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const result = await api.login(username, password);
+
+                if (result.access) {
+                    authToken = result.access;
+                    localStorage.setItem('authToken', authToken);
+                    currentUser = result.user;
+                    isLoggedIn = true;
+                    ui.updateAuthUI();
+                    showMainPage();
+                    ui.showMessage('loginMessage', 'Успешный вход!', 'success');
+                }
+            } catch (error) {
+                ui.showMessage('loginMessage', error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
+            }
+        });
+
+        document.getElementById('registerFormFields').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('registerSubmitBtn');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Регистрация...';
+
+            try {
+                const username = document.getElementById('registerUsername').value;
+                const password = document.getElementById('registerPassword').value;
+
+                const result = await api.register(username, password);
+
+                if (result.user) {
+                    ui.showMessage('registerMessage', 'Регистрация успешна! Теперь войдите в аккаунт.', 'success');
+                    setTimeout(() => showLoginForm(), 2000);
+                }
+            } catch (error) {
+                ui.showMessage('registerMessage', error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Зарегистрироваться';
+            }
+        });
+
+        document.getElementById('newPostForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!isLoggedIn) {
+                alert('Для создания поста необходимо войти в систему!');
+                showAuthPage();
+                return;
+            }
+
+            const submitBtn = document.getElementById('postSubmitBtn');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Публикация...';
+
+            try {
+                const discountData = {
+                    title: document.getElementById('postTitle').value,
+                    description: document.getElementById('postDescription').value,
+                    location: document.getElementById('postLocation').value,
+                    category: document.getElementById('postCategory').value
+                };
+
+                const result = await api.createDiscount(discountData);
+
+                if (result.id) {
+                    ui.showMessage('postMessage', 'Скидка успешно опубликована!', 'success');
+                    setTimeout(() => {
+                        showMainPage();
+                    }, 1500);
+                }
+            } catch (error) {
+                ui.showMessage('postMessage', error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-share"></i> Опубликовать скидку';
+            }
+        });
+
+        function showMainPage() {
+            document.getElementById('mainPage').classList.remove('hidden');
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('newPostPage').classList.add('hidden');
+        }
+
+        function showAuthPage() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('authPage').classList.remove('hidden');
+            document.getElementById('newPostPage').classList.add('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function showNewPostPage() {
+            if (!isLoggedIn) {
+                alert('Для создания поста необходимо войти в систему!');
+                showAuthPage();
+                return;
+            }
+
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('newPostPage').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            showAuthPage();
+            showLoginForm();
+        });
+
+        document.getElementById('registerBtn').addEventListener('click', function() {
+            showAuthPage();
+            showRegisterForm();
+        });
+
+        document.getElementById('homeLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showMainPage();
+        });
+
+        document.getElementById('createPostLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNewPostPage();
+        });
+
+        document.getElementById('newPostBtn').addEventListener('click', function() {
+            showNewPostPage();
+        });
+
+        document.getElementById('cancelPostBtn').addEventListener('click', function() {
+            showMainPage();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            authToken = null;
+            currentUser = null;
+            isLoggedIn = false;
+            localStorage.removeItem('authToken');
+            ui.updateAuthUI();
+            showMainPage();
+        });
+
+        document.querySelectorAll('.favorite').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!isLoggedIn) {
+                    alert('Для добавления в избранное необходимо войти в систему!');
+                    showAuthPage();
+                    return;
+                }
+
+                this.classList.toggle('active');
+                const icon = this.querySelector('i');
+                if (this.classList.contains('active')) {
+                    icon.className = 'fas fa-heart';
+                } else {
+                    icon.className = 'far fa-heart';
+                }
+            });
+        });
+
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!isLoggedIn) {
+                    alert('Для оценки необходимо войти в систему!');
+                    showAuthPage();
+                    return;
+                }
+
+                const card = this.closest('.discount-card');
+                const dislikeBtn = card.querySelector('.dislike-btn');
+                const likeCount = card.querySelector('.like-count');
+
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    this.querySelector('i').className = 'far fa-thumbs-up';
+                    likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                } else {
+                    this.classList.add('active');
+                    this.querySelector('i').className = 'fas fa-thumbs-up';
+                    likeCount.textContent = parseInt(likeCount.textContent) + 1;
+
+                    if (dislikeBtn.classList.contains('active')) {
+                        dislikeBtn.classList.remove('active');
+                        dislikeBtn.querySelector('i').className = 'far fa-thumbs-down';
+                        const dislikeCount = card.querySelector('.dislike-count');
+                        dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.dislike-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!isLoggedIn) {
+                    alert('Для оценки необходимо войти в систему!');
+                    showAuthPage();
+                    return;
+                }
+
+                const card = this.closest('.discount-card');
+                const likeBtn = card.querySelector('.like-btn');
+                const dislikeCount = card.querySelector('.dislike-count');
+
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    this.querySelector('i').className = 'far fa-thumbs-down';
+                    dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+                } else {
+                    this.classList.add('active');
+                    this.querySelector('i').className = 'fas fa-thumbs-down';
+                    dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+
+                    if (likeBtn.classList.contains('active')) {
+                        likeBtn.classList.remove('active');
+                        likeBtn.querySelector('i').className = 'far fa-thumbs-up';
+                        const likeCount = card.querySelector('.like-count');
+                        likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (authToken) {
+                isLoggedIn = true;
+                currentUser = { username: 'Пользователь' };
+            }
+            ui.updateAuthUI();
+        });
+    </script>
+</body>
+</html>
