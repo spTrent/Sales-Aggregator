@@ -5,7 +5,6 @@ User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='Название категории')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     
     class Meta:
         verbose_name = 'Категория'

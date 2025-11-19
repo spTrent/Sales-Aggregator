@@ -3,7 +3,7 @@ from .models import Category, Post, Vote, Favorite
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'created_at']
+    list_display = ['name']
     search_fields = ['name']
 
 @admin.register(Post)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Category
+from .models import Post
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -8,12 +8,12 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Например: Скидка 50% на пиццу'
+                'placeholder': 'Например: Скидка 20% на пиццу'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 4,
-                'placeholder': 'Подробно опишите условия скидки, срок действия, требования...'
+                'placeholder': 'Опишите условия скидки, срок действия, требования...'
             }),
             'place': forms.TextInput(attrs={
                 'class': 'form-control',
