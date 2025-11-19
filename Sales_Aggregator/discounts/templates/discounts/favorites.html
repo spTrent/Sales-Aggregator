@@ -1,52 +1,54 @@
 {% extends 'discounts/base.html' %}
 
-{% block title %}Избранное - StudCheck{% endblock %}
+{% block title %}Избранное - СтудCheck{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Избранные скидки</h2>
+<h2 class="section-title">Избранные скидки</h2>
 
 {% if posts %}
     {% for post in posts %}
-    <div class="card post-card">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <span class="badge bg-secondary category-badge">{{ post.category.name }}</span>
+    <div class="discount-card">
+        <div class="discount-actions">
+            <form method="post" action="{% url 'toggle_favorite' post.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="icon-btn favorite active" title="Удалить из избранного">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </form>
+        </div>
+        <div class="discount-title">{{ post.title }}</div>
+        <div class="discount-description">{{ post.description }}</div>
+        <div class="discount-info">
+            <div>
+                <strong>Место:</strong> {{ post.place }}<br>
+                <strong>Категория:</strong> {{ post.category.name }}
             </div>
-            
-            <p class="card-text">{{ post.description }}</p>
-            
-            <div class="mb-2">
-                <strong>Место:</strong> {{ post.place }}
+            <div class="discount-date">
+                Автор: {{ post.author.username }}<br>
+                {{ post.created_at|date:"d.m.Y H:i" }}
             </div>
-            
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <span class="text-success">👍 {{ post.upvotes_count|default:0 }}</span>
-                    <span class="text-danger ms-2">👎 {{ post.downvotes_count|default:0 }}</span>
+        </div>
+        <div class="rating-section">
+            <div class="rating-count">
+                <div class="rating-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>{{ post.upvotes_count|default:0 }}</span>
                 </div>
-                
-                <div class="d-flex align-items-center">
-                    <form method="post" action="{% url 'toggle_favorite' post.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-warning me-2" title="Удалить из избранного">
-                            Удалить
-                        </button>
-                    </form>
-                    <small class="text-muted">
-                        Автор: {{ post.author.username }}<br>
-                        {{ post.created_at|date:"d.m.Y H:i" }}
-                    </small>
+                <div class="rating-item">
+                    <i class="fas fa-thumbs-down"></i>
+                    <span>{{ post.downvotes_count|default:0 }}</span>
                 </div>
             </div>
         </div>
     </div>
     {% endfor %}
 {% else %}
-    <div class="text-center py-5">
-        <h4>В избранном пока пусто</h4>
-        <p class="text-muted">Добавляйте скидки в избранное, чтобы не потерять!</p>
-        <a href="{% url 'home' %}" class="btn btn-primary">Найти скидки</a>
+    <div class="discount-card">
+        <div style="text-align: center; padding: 40px;">
+            <h3>В избранном пока пусто</h3>
+            <p style="color: #666; margin: 20px 0;">Добавляйте скидки в избранное, чтобы не потерять!</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">Найти скидки</a>
+        </div>
     </div>
 {% endif %}
 {% endblock %}

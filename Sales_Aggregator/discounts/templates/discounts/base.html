@@ -1,50 +1,548 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}StudCheck - Студенческие скидки{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>{% block title %}СтудCheck - агрегатор студенческих скидок{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        :root {
+          --primary: #d4afff;
+          --primary-dark: #b800ff;
+          --primary-light: #f4e4ff;
+          --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5ffff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: black;
+            padding: 20px 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: black;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: black;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: black;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: black;
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: black;
+            border: 2px solid black;
+        }
+
+        .btn-outline:hover {
+            background: black;
+            color: var(--primary);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: #337;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .discount-card {
+        width: 95%;
+        margin: 20px auto;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: relative;
+    }
+
+    .discount-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .discount-description {
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .discount-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .discount-date {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .discount-actions {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .icon-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #666;
+        transition: var(--transition);
+        padding: 5px;
+        border-radius: 50%;
+    }
+
+    .icon-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+    }
+
+    .favorite.active {
+        color: #ff4757;
+    }
+
+    .like-btn.active {
+        color: #4CAF50;
+    }
+
+    .dislike-btn.active {
+        color: #f44336;
+    }
+
+    .rating-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .rating-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .rating-count {
+        font-size: 0.9rem;
+        color: #666;
+        display: flex;
+        gap: 15px;
+    }
+
+    .rating-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .new-post-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-dark);
+        color: white;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        z-index: 100;
+    }
+
+    .new-post-btn:hover {
+        transform: scale(1.1);
+        background: var(--primary);
+    }
+
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 40px 0;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #337;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        color: #666;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-input:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(180, 0, 255, 0.1);
+    }
+
+    .form-textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        resize: vertical;
+        min-height: 100px;
+        font-family: inherit;
+    }
+
+    .form-textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(180, 0, 255, 0.1);
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background: white;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(180, 0, 255, 0.1);
+    }
+
+    .btn-full {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #666;
+    }
+
+    .auth-footer a {
+        color: var(--primary-dark);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .tabs {
+        display: flex;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        border-bottom: 3px solid transparent;
+    }
+
+    .tab.active {
+        color: var(--primary-dark);
+        border-bottom: 3px solid var(--primary-dark);
+    }
+
+    .tab:hover:not(.active) {
+        background: #f9f9f9;
+    }
+
+    .post-form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 40px 0;
+    }
+
+    .post-form-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        padding: 40px;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .post-form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #337;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+
+    .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #c62828;
+    }
+
+    .success-message {
+        background: #e8f5e8;
+        color: #2e7d32;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #2e7d32;
+    }
+
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-links {
+            gap: 15px;
+        }
+
+        .auth-card {
+            padding: 25px;
+            margin: 0 15px;
+        }
+
+        .post-form-card {
+            padding: 25px;
+            margin: 0 15px;
+        }
+    }
+    </style>
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <header>
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">StudCheck</a>
-            
-            <div class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                    <a class="nav-link" href="{% url 'create_post' %}">Добавить скидку</a>
-                    <a class="nav-link" href="{% url 'user_posts' %}">Мои посты</a>
-                    <a class="nav-link" href="{% url 'favorites' %}">Избранное</a>
-                    <a class="nav-link" href="{% url 'users:profile' %}">{{ user.username }}</a>
-                    <a class="nav-link" href="{% url 'users:logout' %}">Выйти</a>
-                {% else %}
-                    <a class="nav-link" href="{% url 'users:login' %}">Войти</a>
-                    <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
-                {% endif %}
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-text">
+                        <h1>СтудCheck</h1>
+                        <p>Агрегатор студенческих скидок</p>
+                    </div>
+                </div>
+
+                <nav class="nav-links">
+                    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'user_posts' %}"><i class="fas fa-newspaper"></i> Мои посты</a>
+                    <a href="{% url 'favorites' %}"><i class="fas fa-heart"></i> Избранное</a>
+                    <a href="{% url 'create_post' %}"><i class="fas fa-plus-circle"></i> Создание поста</a>
+                    {% endif %}
+                </nav>
+
+                <div class="user-actions">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <div class="user-avatar">{{ user.username|first|upper }}</div>
+                        <span>{{ user.username }}</span>
+                        <a href="{% url 'users:logout' %}" class="btn btn-outline"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                    {% else %}
+                    <div>
+                        <a href="{% url 'users:login' %}" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Войти</a>
+                        <a href="{% url 'users:register' %}" class="btn btn-primary"><i class="fas fa-user-plus"></i> Регистрация</a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <div class="container mt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        {% block content %}
-        {% endblock %}
-    </div>
-
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container text-center">
-            <p>StudCheck. Студенческие скидки.</p>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="container">
+            <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
+                {{ message }}
+            </div>
         </div>
-    </footer>
+        {% endfor %}
+    {% endif %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block content %}
+    {% endblock %}
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'create_post' %}" class="new-post-btn" title="Создать новый пост">
+        <i class="fas fa-plus"></i>
+    </a>
+    {% endif %}
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
