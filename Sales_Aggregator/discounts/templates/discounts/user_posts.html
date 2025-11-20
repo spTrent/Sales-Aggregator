@@ -5,21 +5,21 @@
 {% block content %}
 <div class="container">
     <h2 class="section-title">Мои посты о скидках</h2>
-    
+
     <div class="favorites-container">
         {% if posts %}
             {% for post in posts %}
             <div class="discount-card" data-post-id="{{ post.id }}">
                 <div class="discount-actions">
-                    <button type="button" 
-                            class="icon-btn favorite {% if post.is_favorite %}active{% endif %}" 
+                    <button type="button"
+                            class="icon-btn favorite {% if post.is_favorite %}active{% endif %}"
                             data-post-id="{{ post.id }}"
                             data-favorite-url="{% url 'toggle_favorite' post.id %}"
                             title="{% if post.is_favorite %}Удалить из избранного{% else %}Добавить в избранное{% endif %}">
                         <i class="{% if post.is_favorite %}fas{% else %}far{% endif %} fa-heart"></i>
                     </button>
-                    <button type="button" 
-                            class="icon-btn delete-post" 
+                    <button type="button"
+                            class="icon-btn delete-post"
                             data-post-id="{{ post.id }}"
                             data-delete-url="{% url 'delete_post' post.id %}"
                             title="Удалить пост">
@@ -38,11 +38,11 @@
                         Обновлен: {{ post.updated_at|date:"d.m.Y H:i" }}
                     </div>
                 </div>
-                
+
                 <div class="rating-section">
                     <div class="rating-buttons">
-                        <button type="button" 
-                                class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}" 
+                        <button type="button"
+                                class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}"
                                 data-post-id="{{ post.id }}"
                                 data-vote-type="up"
                                 data-vote-url="{% url 'vote_post' post.id 'up' %}"
@@ -50,9 +50,9 @@
                             <i class="{% if post.user_vote == 'up' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
                             <span class="vote-count">{{ post.upvotes_count|default:0 }}</span>
                         </button>
-                        
-                        <button type="button" 
-                                class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}" 
+
+                        <button type="button"
+                                class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}"
                                 data-post-id="{{ post.id }}"
                                 data-vote-type="down"
                                 data-vote-url="{% url 'vote_post' post.id 'down' %}"
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const voteUrl = this.dataset.voteUrl;
             const button = this;
             const card = button.closest('.discount-card');
-            
+
             fetch(voteUrl, {
                 method: 'POST',
                 headers: {
@@ -117,10 +117,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const dislikeCount = dislikeBtn.querySelector('.vote-count');
                     const likeIcon = likeBtn.querySelector('i');
                     const dislikeIcon = dislikeBtn.querySelector('i');
-                    
+
                     likeCount.textContent = data.upvotes_count;
                     dislikeCount.textContent = data.downvotes_count;
-                    
+
                     if (data.user_vote === 'up') {
                         likeBtn.classList.add('active');
                         dislikeBtn.classList.remove('active');
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const favoriteUrl = this.dataset.favoriteUrl;
             const button = this;
             const icon = button.querySelector('i');
-            
+
             fetch(favoriteUrl, {
                 method: 'POST',
                 headers: {
@@ -185,11 +185,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
                 return;
             }
-            
+
             const deleteUrl = this.dataset.deleteUrl;
             const button = this;
             const card = button.closest('.discount-card');
-            
+
             fetch(deleteUrl, {
                 method: 'POST',
                 headers: {

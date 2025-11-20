@@ -8,7 +8,7 @@
     <div class="main-content">
         <div class="filters-sidebar">
             <h3 class="filters-title">Фильтры</h3>
-            
+
             <div class="filter-group">
                 <div class="filter-group-title">
                     Категории
@@ -21,7 +21,7 @@
                     </li>
                     {% for category in categories %}
                     <li class="category-item">
-                        <a href="{% url 'home' %}?category={{ category.id }}" 
+                        <a href="{% url 'home' %}?category={{ category.id }}"
                            class="category-link {% if current_category == category.id|stringformat:'i' %}active{% endif %}">
                             <span>{{ category.name }}</span>
                         </a>
@@ -35,14 +35,14 @@
                 </div>
                 <div class="sort-options">
                     <label class="sort-option {% if sort_by == 'newest' or not sort_by %}active{% endif %}">
-                        <input type="radio" name="sort" value="newest" 
-                               {% if sort_by == 'newest' or not sort_by %}checked{% endif %} 
+                        <input type="radio" name="sort" value="newest"
+                               {% if sort_by == 'newest' or not sort_by %}checked{% endif %}
                                onchange="updateSort(this.value)">
                         <span>Сначала новые</span>
                     </label>
                     <label class="sort-option {% if sort_by == 'rating' %}active{% endif %}">
-                        <input type="radio" name="sort" value="rating" 
-                               {% if sort_by == 'rating' %}checked{% endif %} 
+                        <input type="radio" name="sort" value="rating"
+                               {% if sort_by == 'rating' %}checked{% endif %}
                                onchange="updateSort(this.value)">
                         <span>По рейтингу</span>
                     </label>
@@ -67,8 +67,8 @@
                 <div class="discount-card">
                     <div class="discount-actions">
                         {% if user.is_authenticated %}
-                        <button type="button" 
-                                class="icon-btn favorite {% if post.is_favorite %}active{% endif %}" 
+                        <button type="button"
+                                class="icon-btn favorite {% if post.is_favorite %}active{% endif %}"
                                 data-post-id="{{ post.id }}"
                                 data-favorite-url="{% url 'toggle_favorite' post.id %}"
                                 title="{% if post.is_favorite %}Удалить из избранного{% else %}Добавить в избранное{% endif %}">
@@ -78,7 +78,7 @@
                     </div>
                     <div class="discount-title">{{ post.title }}</div>
                     <div class="discount-description">{{ post.description }}</div>
-                    
+
                     <div class="discount-info">
                         <div>
                             <strong>Место:</strong> {{ post.place }}<br>
@@ -93,8 +93,8 @@
                     <div class="rating-section">
                         <div class="rating-buttons">
                             {% if user.is_authenticated %}
-                            <button type="button" 
-                                    class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}" 
+                            <button type="button"
+                                    class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}"
                                     data-post-id="{{ post.id }}"
                                     data-vote-type="up"
                                     data-vote-url="{% url 'vote_post' post.id 'up' %}"
@@ -102,9 +102,9 @@
                                 <i class="{% if post.user_vote == 'up' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
                                 <span class="vote-count">{{ post.upvotes_count|default:0 }}</span>
                             </button>
-                            
-                            <button type="button" 
-                                    class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}" 
+
+                            <button type="button"
+                                    class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}"
                                     data-post-id="{{ post.id }}"
                                     data-vote-type="down"
                                     data-vote-url="{% url 'vote_post' post.id 'down' %}"
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const voteUrl = this.dataset.voteUrl;
             const button = this;
             const card = button.closest('.discount-card');
-            
+
             fetch(voteUrl, {
                 method: 'POST',
                 headers: {
@@ -183,10 +183,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const dislikeCount = dislikeBtn.querySelector('.vote-count');
                     const likeIcon = likeBtn.querySelector('i');
                     const dislikeIcon = dislikeBtn.querySelector('i');
-                    
+
                     likeCount.textContent = data.upvotes_count;
                     dislikeCount.textContent = data.downvotes_count;
-                    
+
                     if (data.user_vote === 'up') {
                         likeBtn.classList.add('active');
                         dislikeBtn.classList.remove('active');
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const favoriteUrl = this.dataset.favoriteUrl;
             const button = this;
             const icon = button.querySelector('i');
-            
+
             fetch(favoriteUrl, {
                 method: 'POST',
                 headers: {

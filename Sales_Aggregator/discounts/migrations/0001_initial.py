@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,9 +16,29 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Название категории')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(
+                        max_length=100,
+                        unique=True,
+                        verbose_name='Название категории',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='Дата создания'
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Категория',
@@ -30,14 +49,60 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Post',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, verbose_name='Заголовок')),
-                ('description', models.TextField(verbose_name='Описание условий скидки')),
-                ('place', models.CharField(max_length=200, verbose_name='Место (магазин, кафе и т.д.)')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата обновления')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts', to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts', to='discounts.category', verbose_name='Категория')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'title',
+                    models.CharField(max_length=200, verbose_name='Заголовок'),
+                ),
+                (
+                    'description',
+                    models.TextField(verbose_name='Описание условий скидки'),
+                ),
+                (
+                    'place',
+                    models.CharField(
+                        max_length=200,
+                        verbose_name='Место (магазин, кафе и т.д.)',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='Дата создания'
+                    ),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(
+                        auto_now=True, verbose_name='Дата обновления'
+                    ),
+                ),
+                (
+                    'author',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='posts',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Автор',
+                    ),
+                ),
+                (
+                    'category',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='posts',
+                        to='discounts.category',
+                        verbose_name='Категория',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Пост',
@@ -48,10 +113,39 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Favorite',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorites', to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='favorited_by', to='discounts.post', verbose_name='Пост')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='Дата добавления'
+                    ),
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='favorites',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Пользователь',
+                    ),
+                ),
+                (
+                    'post',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='favorited_by',
+                        to='discounts.post',
+                        verbose_name='Пост',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Избранное',
@@ -62,11 +156,50 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Vote',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('vote_type', models.CharField(choices=[('up', 'Положительная'), ('down', 'Отрицательная')], max_length=4, verbose_name='Тип оценки')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата оценки')),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='votes', to='discounts.post', verbose_name='Пост')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='votes', to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'vote_type',
+                    models.CharField(
+                        choices=[
+                            ('up', 'Положительная'),
+                            ('down', 'Отрицательная'),
+                        ],
+                        max_length=4,
+                        verbose_name='Тип оценки',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='Дата оценки'
+                    ),
+                ),
+                (
+                    'post',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='votes',
+                        to='discounts.post',
+                        verbose_name='Пост',
+                    ),
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='votes',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='Пользователь',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Оценка',

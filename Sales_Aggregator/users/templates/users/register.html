@@ -18,7 +18,7 @@
 
         <form method="post" id="registerFormFields">
             {% csrf_token %}
-            
+
             <div class="form-group">
                 <label class="form-label" for="id_username">Имя пользователя</label>
                 <input type="text" id="id_username" name="username" class="form-input" placeholder="Придумайте никнейм" required autofocus value="{{ form.username.value|default:'' }}">
@@ -26,7 +26,7 @@
                 <div class="error-message">{{ form.username.errors }}</div>
                 {% endif %}
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="id_password1">Пароль</label>
                 <input type="password" id="id_password1" name="password1" class="form-input" placeholder="Создайте надежный пароль" required>

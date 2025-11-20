@@ -15,7 +15,7 @@
 
         <form method="post" id="newPostForm">
             {% csrf_token %}
-            
+
             <div class="form-group">
                 <label class="form-label" for="id_title">Заголовок скидки *</label>
                 <input type="text" id="id_title" name="title" class="form-input" placeholder="Например: Скидка 20% на учебники" required value="{{ form.title.value|default:'' }}">

@@ -5,14 +5,14 @@
 {% block content %}
 <div class="container">
     <h2 class="section-title">Избранные скидки</h2>
-    
+
     <div class="favorites-container">
         {% if posts %}
             {% for post in posts %}
             <div class="discount-card">
                 <div class="discount-actions">
-                    <button type="button" 
-                            class="icon-btn favorite active" 
+                    <button type="button"
+                            class="icon-btn favorite active"
                             data-post-id="{{ post.id }}"
                             data-favorite-url="{% url 'toggle_favorite' post.id %}"
                             title="Удалить из избранного">
@@ -31,11 +31,11 @@
                         {{ post.created_at|date:"d.m.Y H:i" }}
                     </div>
                 </div>
-                
+
                 <div class="rating-section">
                     <div class="rating-buttons">
-                        <button type="button" 
-                                class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}" 
+                        <button type="button"
+                                class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}"
                                 data-post-id="{{ post.id }}"
                                 data-vote-type="up"
                                 data-vote-url="{% url 'vote_post' post.id 'up' %}"
@@ -43,9 +43,9 @@
                             <i class="{% if post.user_vote == 'up' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
                             <span class="vote-count">{{ post.upvotes_count|default:0 }}</span>
                         </button>
-                        
-                        <button type="button" 
-                                class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}" 
+
+                        <button type="button"
+                                class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}"
                                 data-post-id="{{ post.id }}"
                                 data-vote-type="down"
                                 data-vote-url="{% url 'vote_post' post.id 'down' %}"
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const voteUrl = this.dataset.voteUrl;
             const button = this;
             const card = button.closest('.discount-card');
-            
+
             fetch(voteUrl, {
                 method: 'POST',
                 headers: {
@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const dislikeCount = dislikeBtn.querySelector('.vote-count');
                     const likeIcon = likeBtn.querySelector('i');
                     const dislikeIcon = dislikeBtn.querySelector('i');
-                    
+
                     likeCount.textContent = data.upvotes_count;
                     dislikeCount.textContent = data.downvotes_count;
-                    
+
                     if (data.user_vote === 'up') {
                         likeBtn.classList.add('active');
                         dislikeBtn.classList.remove('active');
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const favoriteUrl = this.dataset.favoriteUrl;
             const button = this;
             const card = button.closest('.discount-card');
-            
+
             fetch(favoriteUrl, {
                 method: 'POST',
                 headers: {
