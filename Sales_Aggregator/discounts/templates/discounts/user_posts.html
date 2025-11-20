@@ -3,53 +3,229 @@
 {% block title %}Мои посты - СтудCheck{% endblock %}
 
 {% block content %}
-<h2 class="section-title">Мои посты о скидках</h2>
+<div class="container">
+    <h2 class="section-title">Мои посты о скидках</h2>
+    
+    <div class="favorites-container">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="discount-card" data-post-id="{{ post.id }}">
+                <div class="discount-actions">
+                    <button type="button" 
+                            class="icon-btn favorite {% if post.is_favorite %}active{% endif %}" 
+                            data-post-id="{{ post.id }}"
+                            data-favorite-url="{% url 'toggle_favorite' post.id %}"
+                            title="{% if post.is_favorite %}Удалить из избранного{% else %}Добавить в избранное{% endif %}">
+                        <i class="{% if post.is_favorite %}fas{% else %}far{% endif %} fa-heart"></i>
+                    </button>
+                    <button type="button" 
+                            class="icon-btn delete-post" 
+                            data-post-id="{{ post.id }}"
+                            data-delete-url="{% url 'delete_post' post.id %}"
+                            title="Удалить пост">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="discount-title">{{ post.title }}</div>
+                <div class="discount-description">{{ post.description }}</div>
+                <div class="discount-info">
+                    <div>
+                        <strong>Место:</strong> {{ post.place }}<br>
+                        <strong>Категория:</strong> {{ post.category.name }}
+                    </div>
+                    <div class="discount-date">
+                        Создан: {{ post.created_at|date:"d.m.Y H:i" }}<br>
+                        Обновлен: {{ post.updated_at|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+                
+                <div class="rating-section">
+                    <div class="rating-buttons">
+                        <button type="button" 
+                                class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}" 
+                                data-post-id="{{ post.id }}"
+                                data-vote-type="up"
+                                data-vote-url="{% url 'vote_post' post.id 'up' %}"
+                                title="Полезно">
+                            <i class="{% if post.user_vote == 'up' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                            <span class="vote-count">{{ post.upvotes_count|default:0 }}</span>
+                        </button>
+                        
+                        <button type="button" 
+                                class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}" 
+                                data-post-id="{{ post.id }}"
+                                data-vote-type="down"
+                                data-vote-url="{% url 'vote_post' post.id 'down' %}"
+                                title="Неактуально">
+                            <i class="{% if post.user_vote == 'down' %}fas{% else %}far{% endif %} fa-thumbs-down"></i>
+                            <span class="vote-count">{{ post.downvotes_count|default:0 }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="discount-card no-posts">
+                <h3>У вас пока нет постов</h3>
+                <p>Поделитесь первой скидкой с другими студентами!</p>
+                <a href="{% url 'create_post' %}" class="btn btn-primary" style="margin-top: 20px;">Добавить первую скидку</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
-{% if posts %}
-    {% for post in posts %}
-    <div class="discount-card">
-        <div class="discount-title">{{ post.title }}</div>
-        <div class="discount-description">{{ post.description }}</div>
-        <div class="discount-info">
-            <div>
-                <strong>Место:</strong> {{ post.place }}<br>
-                <strong>Категория:</strong> {{ post.category.name }}
-            </div>
-            <div class="discount-date">
-                Создан: {{ post.created_at|date:"d.m.Y H:i" }}<br>
-                Обновлен: {{ post.updated_at|date:"d.m.Y H:i" }}
-            </div>
-        </div>
-        <div class="rating-section">
-            <div class="rating-count">
-                <div class="rating-item">
-                    <i class="fas fa-thumbs-up"></i>
-                    <span>{{ post.upvotes_count|default:0 }}</span>
-                </div>
-                <div class="rating-item">
-                    <i class="fas fa-thumbs-down"></i>
-                    <span>{{ post.downvotes_count|default:0 }}</span>
-                </div>
-                <div class="rating-item">
-                    <i class="fas fa-heart"></i>
-                    <span>{{ post.favorited_by.count }}</span>
-                </div>
-            </div>
-            <div>
-                <span style="font-weight: bold; color: {% if post.rating > 0 %}#4CAF50{% elif post.rating < 0 %}#f44336{% else %}#666{% endif %};">
-                    Рейтинг: {{ post.rating }}
-                </span>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-{% else %}
-    <div class="discount-card">
-        <div style="text-align: center; padding: 40px;">
-            <h3>У вас пока нет постов</h3>
-            <p style="color: #666; margin: 20px 0;">Поделитесь первой скидкой с другими студентами!</p>
-            <a href="{% url 'create_post' %}" class="btn btn-primary">Добавить первую скидку</a>
-        </div>
-    </div>
-{% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    document.querySelectorAll('.vote-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const postId = this.dataset.postId;
+            const voteType = this.dataset.voteType;
+            const voteUrl = this.dataset.voteUrl;
+            const button = this;
+            const card = button.closest('.discount-card');
+            
+            fetch(voteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const likeBtn = card.querySelector('.like-btn');
+                    const dislikeBtn = card.querySelector('.dislike-btn');
+                    const likeCount = likeBtn.querySelector('.vote-count');
+                    const dislikeCount = dislikeBtn.querySelector('.vote-count');
+                    const likeIcon = likeBtn.querySelector('i');
+                    const dislikeIcon = dislikeBtn.querySelector('i');
+                    
+                    likeCount.textContent = data.upvotes_count;
+                    dislikeCount.textContent = data.downvotes_count;
+                    
+                    if (data.user_vote === 'up') {
+                        likeBtn.classList.add('active');
+                        dislikeBtn.classList.remove('active');
+                        likeIcon.className = 'fas fa-thumbs-up';
+                        dislikeIcon.className = 'far fa-thumbs-down';
+                    } else if (data.user_vote === 'down') {
+                        likeBtn.classList.remove('active');
+                        dislikeBtn.classList.add('active');
+                        likeIcon.className = 'far fa-thumbs-up';
+                        dislikeIcon.className = 'fas fa-thumbs-down';
+                    } else {
+                        likeBtn.classList.remove('active');
+                        dislikeBtn.classList.remove('active');
+                        likeIcon.className = 'far fa-thumbs-up';
+                        dislikeIcon.className = 'far fa-thumbs-down';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    document.querySelectorAll('.favorite').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const favoriteUrl = this.dataset.favoriteUrl;
+            const button = this;
+            const icon = button.querySelector('i');
+            
+            fetch(favoriteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.is_favorite) {
+                        button.classList.add('active');
+                        icon.className = 'fas fa-heart';
+                        button.title = 'Удалить из избранного';
+                    } else {
+                        button.classList.remove('active');
+                        icon.className = 'far fa-heart';
+                        button.title = 'Добавить в избранное';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    document.querySelectorAll('.delete-post').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!confirm('Вы уверены, что хотите удалить этот пост?')) {
+                return;
+            }
+            
+            const deleteUrl = this.dataset.deleteUrl;
+            const button = this;
+            const card = button.closest('.discount-card');
+            
+            fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        card.remove();
+                        const container = document.querySelector('.favorites-container');
+                        if (container && container.querySelectorAll('.discount-card').length === 0) {
+                            container.innerHTML = `
+                                <div class="discount-card no-posts">
+                                    <h3>У вас пока нет постов</h3>
+                                    <p>Поделитесь первой скидкой с другими студентами!</p>
+                                    <a href="{% url 'create_post' %}" class="btn btn-primary" style="margin-top: 20px;">Добавить первую скидку</a>
+                                </div>
+                            `;
+                        }
+                    }, 300);
+                } else {
+                    alert(data.error || 'Ошибка при удалении поста');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при удалении поста');
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

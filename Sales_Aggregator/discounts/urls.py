@@ -8,4 +8,5 @@ urlpatterns = [
     path('favorite/<int:post_id>/', views.toggle_favorite, name='toggle_favorite'),
     path('my-posts/', views.user_posts, name='user_posts'),
     path('favorites/', views.favorites, name='favorites'),
+    path('delete/<int:post_id>/', views.delete_post, name='delete_post'),
 ]

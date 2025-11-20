@@ -19,7 +19,6 @@ class RegisterView(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, f'Добро пожаловать, {user.username}!')
             return redirect('home')
         return render(request, 'users/register.html', {'form': form})
 
@@ -38,7 +37,6 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Добро пожаловать, {user.username}!')
                 next_url = request.GET.get('next', 'home')
                 return redirect(next_url)
         messages.error(request, 'Неверный логин или пароль')
@@ -48,10 +46,3 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('home')
-
-@method_decorator(login_required, name='dispatch')
-class ProfileView(View):
-    def get(self, request):
-        return render(request, 'users/profile.html', {
-            'user': request.user
-        })

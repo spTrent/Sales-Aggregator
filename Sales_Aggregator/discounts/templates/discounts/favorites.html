@@ -3,52 +3,182 @@
 {% block title %}Избранное - СтудCheck{% endblock %}
 
 {% block content %}
-<h2 class="section-title">Избранные скидки</h2>
+<div class="container">
+    <h2 class="section-title">Избранные скидки</h2>
+    
+    <div class="favorites-container">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="discount-card">
+                <div class="discount-actions">
+                    <button type="button" 
+                            class="icon-btn favorite active" 
+                            data-post-id="{{ post.id }}"
+                            data-favorite-url="{% url 'toggle_favorite' post.id %}"
+                            title="Удалить из избранного">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="discount-title">{{ post.title }}</div>
+                <div class="discount-description">{{ post.description }}</div>
+                <div class="discount-info">
+                    <div>
+                        <strong>Место:</strong> {{ post.place }}<br>
+                        <strong>Категория:</strong> {{ post.category.name }}
+                    </div>
+                    <div class="discount-date">
+                        Автор: {{ post.author.username }}<br>
+                        {{ post.created_at|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+                
+                <div class="rating-section">
+                    <div class="rating-buttons">
+                        <button type="button" 
+                                class="vote-btn like-btn {% if post.user_vote == 'up' %}active{% endif %}" 
+                                data-post-id="{{ post.id }}"
+                                data-vote-type="up"
+                                data-vote-url="{% url 'vote_post' post.id 'up' %}"
+                                title="Полезно">
+                            <i class="{% if post.user_vote == 'up' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                            <span class="vote-count">{{ post.upvotes_count|default:0 }}</span>
+                        </button>
+                        
+                        <button type="button" 
+                                class="vote-btn dislike-btn {% if post.user_vote == 'down' %}active{% endif %}" 
+                                data-post-id="{{ post.id }}"
+                                data-vote-type="down"
+                                data-vote-url="{% url 'vote_post' post.id 'down' %}"
+                                title="Неактуально">
+                            <i class="{% if post.user_vote == 'down' %}fas{% else %}far{% endif %} fa-thumbs-down"></i>
+                            <span class="vote-count">{{ post.downvotes_count|default:0 }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="discount-card no-posts">
+                <h3>В избранном пока пусто</h3>
+                <p>Добавляйте скидки в избранное, чтобы не потерять!</p>
+                <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top: 20px;">Найти скидки</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
-{% if posts %}
-    {% for post in posts %}
-    <div class="discount-card">
-        <div class="discount-actions">
-            <form method="post" action="{% url 'toggle_favorite' post.id %}" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="icon-btn favorite active" title="Удалить из избранного">
-                    <i class="fas fa-heart"></i>
-                </button>
-            </form>
-        </div>
-        <div class="discount-title">{{ post.title }}</div>
-        <div class="discount-description">{{ post.description }}</div>
-        <div class="discount-info">
-            <div>
-                <strong>Место:</strong> {{ post.place }}<br>
-                <strong>Категория:</strong> {{ post.category.name }}
-            </div>
-            <div class="discount-date">
-                Автор: {{ post.author.username }}<br>
-                {{ post.created_at|date:"d.m.Y H:i" }}
-            </div>
-        </div>
-        <div class="rating-section">
-            <div class="rating-count">
-                <div class="rating-item">
-                    <i class="fas fa-thumbs-up"></i>
-                    <span>{{ post.upvotes_count|default:0 }}</span>
-                </div>
-                <div class="rating-item">
-                    <i class="fas fa-thumbs-down"></i>
-                    <span>{{ post.downvotes_count|default:0 }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-{% else %}
-    <div class="discount-card">
-        <div style="text-align: center; padding: 40px;">
-            <h3>В избранном пока пусто</h3>
-            <p style="color: #666; margin: 20px 0;">Добавляйте скидки в избранное, чтобы не потерять!</p>
-            <a href="{% url 'home' %}" class="btn btn-primary">Найти скидки</a>
-        </div>
-    </div>
-{% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    document.querySelectorAll('.vote-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const postId = this.dataset.postId;
+            const voteType = this.dataset.voteType;
+            const voteUrl = this.dataset.voteUrl;
+            const button = this;
+            const card = button.closest('.discount-card');
+            
+            fetch(voteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const likeBtn = card.querySelector('.like-btn');
+                    const dislikeBtn = card.querySelector('.dislike-btn');
+                    const likeCount = likeBtn.querySelector('.vote-count');
+                    const dislikeCount = dislikeBtn.querySelector('.vote-count');
+                    const likeIcon = likeBtn.querySelector('i');
+                    const dislikeIcon = dislikeBtn.querySelector('i');
+                    
+                    likeCount.textContent = data.upvotes_count;
+                    dislikeCount.textContent = data.downvotes_count;
+                    
+                    if (data.user_vote === 'up') {
+                        likeBtn.classList.add('active');
+                        dislikeBtn.classList.remove('active');
+                        likeIcon.className = 'fas fa-thumbs-up';
+                        dislikeIcon.className = 'far fa-thumbs-down';
+                    } else if (data.user_vote === 'down') {
+                        likeBtn.classList.remove('active');
+                        dislikeBtn.classList.add('active');
+                        likeIcon.className = 'far fa-thumbs-up';
+                        dislikeIcon.className = 'fas fa-thumbs-down';
+                    } else {
+                        likeBtn.classList.remove('active');
+                        dislikeBtn.classList.remove('active');
+                        likeIcon.className = 'far fa-thumbs-up';
+                        dislikeIcon.className = 'far fa-thumbs-down';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
+    document.querySelectorAll('.favorite').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const favoriteUrl = this.dataset.favoriteUrl;
+            const button = this;
+            const card = button.closest('.discount-card');
+            
+            fetch(favoriteUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (!data.is_favorite) {
+                        card.style.transition = 'opacity 0.3s ease';
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.remove();
+                            const container = document.querySelector('.favorites-container');
+                            if (container && container.querySelectorAll('.discount-card').length === 0) {
+                                container.innerHTML = `
+                                    <div class="discount-card no-posts">
+                                        <h3>В избранном пока пусто</h3>
+                                        <p>Добавляйте скидки в избранное, чтобы не потерять!</p>
+                                        <a href="{% url 'home' %}" class="btn btn-primary" style="margin-top: 20px;">Найти скидки</a>
+                                    </div>
+                                `;
+                            }
+                        }, 300);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script>
 {% endblock %}
