@@ -96,29 +96,38 @@ Sales_Aggregator/
 2. **Создать и активировать виртуальное окружение (Linux/macOS):**
 
         uv venv
-        source venv/bin/activate # Linux/macOS
+        source .venv/bin/activate
 
     2.1 **(Windows):**
 
-        venv\Scripts\activate
+        .venv\Scripts\activate
 
 
 3. **Установить зависимости:**
 
         uv sync
 
+4. **Создать БД:**
 
-4. **Применить миграции базы данных:**
+        sudo -u postgres psql
+        CREATE USER sales_user WITH PASSWORD 'qwerty123';
+        CREATE DATABASE sales_aggregator_db OWNER sales_user;
+        \q
 
+5. **Применить миграции базы данных:**
+
+        cd Sales_Aggregator
+        python manage.py makemigrations users
         python manage.py migrate
+        python manage.py loaddata data_backup.json
 
 
-5. **Запустить сервер разработки:**
+6. **Запустить сервер разработки:**
 
         python manage.py runserver
 
 
-6. **Открыть в браузере:**
+7. **Открыть в браузере:**
 
 - `http://127.0.0.1:8000/` — главная страница со скидками.
 - `http://127.0.0.1:8000/admin/` — админ-панель.
