@@ -896,7 +896,7 @@
                         {% if user.is_authenticated %}
                         <a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
                         <a href="{% url 'user_posts' %}"><i class="fas fa-newspaper"></i> Мои посты</a>
-                        <a href="{% url 'favorites' %}\"><i class="fas fa-heart"></i> Избранное</a>
+                        <a href="{% url 'favorites' %}"><i class="fas fa-heart"></i> Избранное</a>
                         <a href="{% url 'create_post' %}"><i class="fas fa-plus-circle"></i> Создание поста</a>
                         {% endif %}
                     </nav>
@@ -921,7 +921,8 @@
         </div>
     </header>
 
-    {% block content %}\n    {% endblock %}
+    {% block content %}
+    {% endblock %}
 
     {% if user.is_authenticated %}
     <a href="{% url 'create_post' %}" class="new-post-btn" title="Создать новый пост">
