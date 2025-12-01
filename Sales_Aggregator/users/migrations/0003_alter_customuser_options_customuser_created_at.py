@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('users', '0002_alter_customuser_options_and_more'),
     ]
@@ -12,7 +11,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='customuser',
-            options={'verbose_name': 'Пользователь', 'verbose_name_plural': 'Пользователи'},
+            options={
+                'verbose_name': 'Пользователь',
+                'verbose_name_plural': 'Пользователи',
+            },
         ),
         migrations.AddField(
             model_name='customuser',

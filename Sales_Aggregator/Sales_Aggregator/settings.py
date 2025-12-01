@@ -2,18 +2,18 @@
 Django settings for Sales_Aggregator project.
 """
 
+import os
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
-SECRET_KEY: str = (
-    'django-insecure-j^%33z#05@p(5no%8cw!8*mn%kdk%8q+ny&pieg_k4pvh16p!^'
-)
-
-DEBUG: bool = True
-
-ALLOWED_HOSTS: list[str] = []
+load_dotenv()
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+DEBUG: int = int(os.getenv('DJANGO_DEBUG', '1'))
+ALLOWED_HOSTS: list[str] = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 INSTALLED_APPS: list[str] = [
     'django.contrib.admin',
