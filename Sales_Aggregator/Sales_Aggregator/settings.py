@@ -55,14 +55,14 @@ TEMPLATES: list[dict[str, Any]] = [
 
 WSGI_APPLICATION: str = 'Sales_Aggregator.wsgi.application'
 
-DATABASES: dict[str, dict[str, str]] = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sales_aggregator_db',
-        'USER': 'sales_user',
-        'PASSWORD': 'qwerty123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'sales_aggregator_db'),
+        'USER': os.environ.get('DB_USER', 'sales_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'qwerty123'),
+        'HOST': os.environ.get('DB_HOST', 'db'), 
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 

@@ -85,6 +85,12 @@ Sales_Aggregator/
 - Дата добавления.
 - Список избранных постов пользователя.
 
+## Ссылка на docker-образ:
+
+```
+https://hub.docker.com/repository/docker/sptrent/sales-aggregator-web/general
+```
+
 ## Установка и запуск (локально):
 
 1. **Клонировать репозиторий:**
